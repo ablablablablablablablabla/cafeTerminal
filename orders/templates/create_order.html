@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Новый заказ</h2>
+    <form method="post" class="order-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Номер столика:</label>
+            <input type="number" name="table_number" required
+                   placeholder="Введите номер столика">
+        </div>
+
+        <div id="dishes-container">
+            <div class="dish-group">
+                <label>Блюдо 1:</label>
+                <input type="text" name="dish_name_1" required
+                       placeholder="Название блюда">
+                <input type="number" name="dish_price_1" step="0.01" required
+                       placeholder="Цена">
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" onclick="addDish()" class="secondary-btn">
+                ➕ Добавить блюдо
+            </button>
+            <input type="hidden" name="dish_count" id="dishCount" value="1">
+            <button type="submit" class="primary-btn">Сохранить заказ</button>
+        </div>
+    </form>
+
+    <script>
+        let dishIndex = 2;
+
+        function addDish() {
+            const container = document.getElementById('dishes-container');
+            const newDish = document.createElement('div');
+            newDish.className = 'dish-group';
+            newDish.innerHTML = `
+                <label>Блюдо ${dishIndex}:</label>
+                <input type="text" name="dish_name_${dishIndex}"
+                       placeholder="Название блюда" required>
+                <input type="number" name="dish_price_${dishIndex}" step="0.01"
+                       placeholder="Цена" required>
+            `;
+            container.appendChild(newDish);
+            document.getElementById('dishCount').value = dishIndex;
+            dishIndex++;
+        }
+    </script>
+{% endblock %}

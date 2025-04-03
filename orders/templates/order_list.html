@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Активные заказы</h2>
+    <form method="get" class="search-form">
+        <input type="text" name="search" value="{{ search_query }}"
+               placeholder="Поиск по ID, столику или блюдам...">
+        <button type="submit">🔍</button>
+    </form>
+
+    <div class="order-list">
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <strong>Заказ #{{ order.id }}</strong>
+                <span class="status-indicator status-{{ order.status }}">
+                    {% if order.status == 'В ожидании' %}
+                        ⏳
+                    {% elif order.status == 'Готово' %}
+                        ✅
+                    {% else %}
+                        💵
+                    {% endif %}
+                    {{ order.status }}
+                </span>
+            </div>
+
+            <p>Столик: <strong>{{ order.table_number }}</strong></p>
+
+            <div class="dish-list">
+                {% for item in order.items %}
+                <div class="dish-item">
+                    {{ item.name }} - {{ item.price|floatformat:2 }} руб.
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-footer">
+                <p>Сумма: <strong>{{ order.total_price|floatformat:2 }} руб.</strong></p>
+
+                <div class="actions">
+                    <form method="post" action="{% url 'update_status' order.id %}" class="status-form">
+                        {% csrf_token %}
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="В ожидании" {% if order.status == 'В ожидании' %}selected{% endif %}>
+                                В ожидании
+                            </option>
+                            <option value="Готово" {% if order.status == 'Готово' %}selected{% endif %}>
+                                Готово
+                            </option>
+                            <option value="Оплачено" {% if order.status == 'Оплачено' %}selected{% endif %}>
+                                Оплачено
+                            </option>
+                        </select>
+                    </form>
+
+                    <form method="post" action="{% url 'order_delete' order.id %}"
+                          onsubmit="return confirm('Удалить заказ #{{ order.id }}?')">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет активных заказов</p>
+        {% endfor %}
+    </div>
+{% endblock %}

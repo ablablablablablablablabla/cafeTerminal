@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Управление кафе{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'orders/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Панель управления кафе</h1>
+            <nav>
+                <a href="{% url 'order_list' %}">Заказы</a> |
+                <a href="{% url 'create_order' %}">Добавить заказ</a> |
+                <a href="{% url 'revenue_report' %}">Финансы</a>
+            </nav>
+        </header>
+
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>
